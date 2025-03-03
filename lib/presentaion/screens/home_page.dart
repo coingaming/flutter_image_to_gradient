@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_gra/bloc/dominant_color_bloc.dart';
 import 'package:image_gra/bloc/dominant_color_event.dart';
 import 'package:image_gra/bloc/dominant_color_state.dart';
-import '../widgets/image_container_widget.dart';
+import 'package:image_gra/presentaion/widgets/image_container_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,14 +19,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          DominantColorBloc()..add(LoadDominantColor(imagePath: imagePath)),
+          DominantColorBloc()..add(LoadDominantColor(imagePath)),
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
             'Dominant Color Extractor',
-            style: TextStyle(color: Color.fromARGB(255, 217, 217, 217)),
+            style: TextStyle(color: Color.fromARGB(255, 234, 234, 234)),
           ),
           backgroundColor: Colors.black,
         ),
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context, state) {
             const errorWidget = Center(
               child: Text(
-                "Error loading colors",
+                "Error process loading",
                 style: TextStyle(color: Colors.red),
               ),
             );
@@ -61,16 +61,18 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         ImageContainerWidget(imagePath: imagePath),
-                        const SizedBox(height: 20),
-                        Container(
-                          width: 500,
-                          height: 400,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(
-                              colors: [darkestColor, lightestColor],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.bottomCenter,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                colors: [darkestColor, lightestColor],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.bottomCenter,
+                              ),
                             ),
                           ),
                         ),
