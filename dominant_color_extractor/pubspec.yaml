@@ -1,7 +1,8 @@
 name: dominant_color_extractor
-description: "A new Flutter package project."
+description: A Flutter package for extracting dominant colors from images.
 version: 0.0.1
-homepage:
+homepage: https://github.com/mariality/dominant_color_extractor
+repository: https://github.com/mariality/dominant_color_extractor
 
 environment:
   sdk: ^3.6.1
@@ -10,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:

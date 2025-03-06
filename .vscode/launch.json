@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "image_gra",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "image_gra (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "image_gra (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "dominant_color_extractor",
+            "cwd": "dominant_color_extractor",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "dominant_color_extractor (profile mode)",
+            "cwd": "dominant_color_extractor",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "dominant_color_extractor (release mode)",
+            "cwd": "dominant_color_extractor",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

@@ -31,16 +31,18 @@ dependencies:
   flutter:
     sdk: flutter
   dominant_color_extractor:
-    path: ../../
-  image: ^3.2.0
+    path: ../
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  image: ^3.2.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -63,7 +65,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   # assets:
   assets:
-  - assets/images/image_gradient.jpg
+    - assets/images/image_gradient.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
