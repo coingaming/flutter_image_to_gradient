@@ -16,6 +16,9 @@ class DominantColorExtractor {
     int maxColors = 100,
     int resizedHeight = 200,
     int resizedWidth = 200,
+    totalRed = 0,
+    totalGreen = 0,
+    totalBlue = 0,
   }) async {
     Uint8List? bytes = await loadImageBytes(
       imageUrl: imageUrl,
@@ -65,6 +68,7 @@ class DominantColorExtractor {
             (red < 15 && green < 15 && blue < 15)) {
           continue;
         }
+
         colorFrequency[pixel] = (colorFrequency[pixel] ?? 0) + 1;
       }
     }
