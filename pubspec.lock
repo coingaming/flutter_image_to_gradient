@@ -123,6 +123,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+  k_means_cluster:
+    dependency: "direct main"
+    description:
+      name: k_means_cluster
+      sha256: "37a0d432fb95eaaf552c3155b9ed0d4508858276c0f0627f2b2af3c34481d1f3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   leak_tracker:
     dependency: transitive
     description:

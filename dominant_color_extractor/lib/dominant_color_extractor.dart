@@ -1,3 +1,3 @@
 library dominant_color_extractor;
 
-export 'src/dominant_color_extractor.dart';
+export 'image/image_color_extractor.dart';

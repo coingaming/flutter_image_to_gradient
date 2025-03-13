@@ -1,0 +1,128 @@
+import 'dart:typed_data';
+import 'package:dominant_color_extractor/dominant_color_extractor.dart';
+import 'package:dominant_color_extractor/image/image_loader.dart';
+import 'package:flutter/material.dart';
+
+class ColorExtractorScreen extends StatefulWidget {
+  const ColorExtractorScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ColorExtractorScreenState createState() => _ColorExtractorScreenState();
+}
+
+class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
+  final TextEditingController _imageUrlController = TextEditingController();
+  List<Color> extractedColors = [];
+  bool isExtractingColors = false;
+  Uint8List? loadedImageBytes;
+
+  Future<void> processColorExtraction() async {
+    setState(() {
+      isExtractingColors = true;
+    });
+
+    String imageUrl = _imageUrlController.text.trim();
+    if (imageUrl.isEmpty) return;
+
+    Uint8List? imageBytes =
+        await ImageLoader.loadImageBytes(imageUrl: imageUrl);
+    if (imageBytes == null) {
+      setState(() {
+        isExtractingColors = false;
+      });
+      return;
+    }
+
+    List<Color> colors = await DominantColorExtractor.extractColors(
+        existingImageBytes: imageBytes);
+
+    setState(() {
+      loadedImageBytes = imageBytes;
+      extractedColors = colors;
+      isExtractingColors = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: const Text(
+          'Dominant Color Extractor',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 320,
+                child: TextField(
+                  controller: _imageUrlController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Enter image URL',
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.grey[800],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: processColorExtraction,
+                child: const Text('Extract Colors',
+                    style: TextStyle(fontSize: 16, color: Colors.black)),
+              ),
+              const SizedBox(height: 20),
+              isExtractingColors
+                  ? const CircularProgressIndicator(color: Colors.blue)
+                  : Column(
+                      children: [
+                        if (loadedImageBytes != null)
+                          Container(
+                            width: 300,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: MemoryImage(loadedImageBytes!),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        const SizedBox(height: 20),
+                        if (extractedColors.length >= 2)
+                          Container(
+                            width: 300,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              gradient: LinearGradient(
+                                colors: [
+                                  extractedColors.first,
+                                  extractedColors.last
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

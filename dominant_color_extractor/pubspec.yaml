@@ -12,6 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.8.0+1
+  k_means_cluster: ^0.3.0
+ 
+
+
+
 
 dev_dependencies:
   flutter_test:
