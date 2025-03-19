@@ -27,6 +27,8 @@ class DominantColorExtractor {
   static List<Color> _processImageAndExtractColors(
       Uint8List imageData, int targetImageSize, int numberOfClusters) {
     final img.Image? decodedImage = img.decodeImage(imageData);
+    imageData = Uint8List(0);
+
     if (decodedImage == null) return [];
 
     final img.Image resizedImage = img.copyResize(decodedImage,
@@ -34,6 +36,7 @@ class DominantColorExtractor {
 
     List<Color> colorPalette =
         _getClusteredColors(resizedImage, numberOfClusters);
+
     colorPalette = _filterOutExtremeColors(colorPalette);
     colorPalette.sort(
         (a, b) => _calculateBrightness(a).compareTo(_calculateBrightness(b)));
@@ -61,6 +64,8 @@ class DominantColorExtractor {
     List<Cluster> clusters =
         initialClusters(numberOfClusters, pixelInstances, seed: 0);
     kMeans(clusters: clusters, instances: pixelInstances);
+
+    pixelInstances.clear();
 
     return clusters.map((cluster) {
       if (cluster.instances.isEmpty) return Colors.grey;

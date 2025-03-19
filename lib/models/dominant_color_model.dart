@@ -7,7 +7,7 @@ class DominantColorModel extends Equatable {
   DominantColorModel({required this.colors});
 
   @override
-  List<Object> get props => [Color];
+  List<Object> get props => [colors];
 
   factory DominantColorModel.fromSingleColor(Color color) {
     return DominantColorModel(colors: [color]);

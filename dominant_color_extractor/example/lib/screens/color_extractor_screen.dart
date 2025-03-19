@@ -1,7 +1,6 @@
 import 'dart:typed_data';
-import 'package:dominant_color_extractor/dominant_color_extractor.dart';
-import 'package:dominant_color_extractor/image/image_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:dominant_color_extractor/services/select_image_source.dart';
 
 class ColorExtractorScreen extends StatefulWidget {
   const ColorExtractorScreen({super.key});
@@ -17,30 +16,25 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   bool isExtractingColors = false;
   Uint8List? loadedImageBytes;
 
-  Future<void> processColorExtraction() async {
+  Future<void> _handleImageSelection(String sourceType) async {
     setState(() {
       isExtractingColors = true;
     });
 
-    String imageUrl = _imageUrlController.text.trim();
-    if (imageUrl.isEmpty) return;
-
-    Uint8List? imageBytes =
-        await ImageLoader.loadImageBytes(imageUrl: imageUrl);
-    if (imageBytes == null) {
-      setState(() {
-        isExtractingColors = false;
-      });
-      return;
-    }
-
-    List<Color> colors = await DominantColorExtractor.extractColors(
-        existingImageBytes: imageBytes);
+    Map<String, dynamic> result = await ImageSelector.selectAndExtractColors(
+      sourceType: sourceType,
+      imageUrl: _imageUrlController.text,
+    );
 
     setState(() {
-      loadedImageBytes = imageBytes;
-      extractedColors = colors;
       isExtractingColors = false;
+      if (result.containsKey('error')) {
+        extractedColors = [];
+        loadedImageBytes = null;
+      } else {
+        extractedColors = result['colors'];
+        loadedImageBytes = result['imageBytes'];
+      }
     });
   }
 
@@ -78,9 +72,25 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.image, color: Colors.white),
+                    onPressed: () => _handleImageSelection("Gallery"),
+                    tooltip: "Pick from Gallery",
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.photo_library, color: Colors.white),
+                    onPressed: () => _handleImageSelection("Assets"),
+                    tooltip: "Load from Assets",
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: processColorExtraction,
+                onPressed: () => _handleImageSelection("URL"),
                 child: const Text('Extract Colors',
                     style: TextStyle(fontSize: 16, color: Colors.black)),
               ),

@@ -13,9 +13,9 @@ dependencies:
     sdk: flutter
   dio: ^5.8.0+1
   k_means_cluster: ^0.3.0
- 
-
-
+  image_picker: ^1.1.2
+  file_picker: ^9.1.0
+  
 
 
 dev_dependencies:

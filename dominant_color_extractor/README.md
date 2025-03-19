@@ -1,8 +1,8 @@
 ## Dominant Color Extractor
 
 
-### What is Dominant Color Extractor?
-Dominant Color Extractor is a Flutter library that library that extracts the most important colors from an image and creates a smooth gradient. You can use it to generate color palettes or create dynamic UI themes based on images.
+### What is Gradient Generater?
+Dominant Color Extractor is a Flutter library that extracts the most dominant colors from an image and creates a smooth gradient. You can use it to generate color palettes or create dynamic gradient for your UI themes based on images.
 
 ## Example
 
@@ -12,15 +12,16 @@ https://github.com/coingaming/flutter_image_to_gradient/issues/5#issue-291821228
 ## Install the library
 
 - First you need to install the library from pub.dev.
-- Add this to your 'pubspec.yaml
+- Add this to your 'pubspec.yaml'
 - You can do this by running:
 ```flutter pub add dominant_color_extractor```
 - After installation is complete, udpate your imports:
 ```flutter pub get```
-- Great! Now use can use my library. 😃
+- Great! Now we can use my library. 😃
+
 ## Features of Dominant Color Exractor 
 
-## How does it works? 🤔
+## How does it work? 🤔
  ### Loads and image from a URL, local file, or assets.
 - Extracts dominant colors using kMeans clustering.
 - Filters out extreme colors (too dark or too bright)
