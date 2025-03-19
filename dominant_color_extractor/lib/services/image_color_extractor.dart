@@ -27,7 +27,7 @@ class DominantColorExtractor {
   static List<Color> _processImageAndExtractColors(
       Uint8List imageData, int targetImageSize, int numberOfClusters) {
     final img.Image? decodedImage = img.decodeImage(imageData);
-    imageData = Uint8List(0);
+    imageData.clear();
 
     if (decodedImage == null) return [];
 

@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 import 'package:dominant_color_extractor/interfaces/color_extractor_interface.dart';
 import 'package:flutter/material.dart';
-import 'image_color_extractor.dart';
 import 'image_loader.dart';
 
 class ImageSelector {
