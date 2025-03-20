@@ -1,4 +1,7 @@
 import 'dart:typed_data';
+
+import 'package:dominant_color_extractor/implementations/dominant_color_extractor_impl.dart';
+import 'package:dominant_color_extractor/services/image_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:dominant_color_extractor/services/select_image_source.dart';
 
@@ -12,6 +15,12 @@ class ColorExtractorScreen extends StatefulWidget {
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
+
+  final ImageSelector _imageSelector = ImageSelector(
+    ImageLoader(),
+    ImageColorExtractorImpl(),
+  );
+
   List<Color> extractedColors = [];
   bool isExtractingColors = false;
   Uint8List? loadedImageBytes;
@@ -21,20 +30,26 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
       isExtractingColors = true;
     });
 
-    Map<String, dynamic> result = await ImageSelector.selectAndExtractColors(
+    Uint8List? imageBytes = await _imageSelector.selectImageSource(
       sourceType: sourceType,
-      imageUrl: _imageUrlController.text,
+      imageUrl: _imageUrlController.text.trim(),
     );
+
+    if (imageBytes == null) {
+      setState(() {
+        isExtractingColors = false;
+        extractedColors = [];
+        loadedImageBytes = null;
+      });
+      return;
+    }
+
+    List<Color> colors = await _imageSelector.extractColors(imageBytes);
 
     setState(() {
       isExtractingColors = false;
-      if (result.containsKey('error')) {
-        extractedColors = [];
-        loadedImageBytes = null;
-      } else {
-        extractedColors = result['colors'];
-        loadedImageBytes = result['imageBytes'];
-      }
+      extractedColors = colors;
+      loadedImageBytes = imageBytes;
     });
   }
 
@@ -101,8 +116,8 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
                       children: [
                         if (loadedImageBytes != null)
                           Container(
-                            width: 300,
-                            height: 300,
+                            width: 200,
+                            height: 200,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: MemoryImage(loadedImageBytes!),
@@ -113,8 +128,8 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
                         const SizedBox(height: 20),
                         if (extractedColors.length >= 2)
                           Container(
-                            width: 300,
-                            height: 300,
+                            width: 200,
+                            height: 200,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
                               gradient: LinearGradient(

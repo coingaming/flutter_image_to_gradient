@@ -1,33 +1,31 @@
 import 'dart:typed_data';
+import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:k_means_cluster/k_means_cluster.dart';
 import 'image_loader.dart';
 
-class DominantColorExtractor {
-  static Future<List<Color>> extractColors(
-      {String? imageUrl,
-      String? localFilePath,
-      String? assetPath,
-      Uint8List? existingImageBytes,
-      int targetImageSize = 200,
-      int numberOfClusters = 20}) async {
-    Uint8List? imageData = await ImageLoader.loadImageBytes(
-      imageUrl: imageUrl,
-      localFilePath: localFilePath,
-      assetPath: assetPath,
-      existingImageBytes: existingImageBytes,
-    );
-    if (imageData == null) return [];
+class DominantColorExtractor implements ColorExtractorInterface {
+  final ImageLoader _imageLoader = ImageLoader();
 
-    return _processImageAndExtractColors(
-        imageData, targetImageSize, numberOfClusters);
+  @override
+  Future<List<Color>> extractColors({required Uint8List imageBytes}) async {
+    return _processImageAndExtractColors(imageBytes, 200, 35);
   }
 
-  static List<Color> _processImageAndExtractColors(
+  Future<Uint8List?> loadImage({
+    String? imageUrl,
+    String? assetPath,
+  }) async {
+    return _imageLoader.loadImageBytes(
+      imageUrl: imageUrl,
+      assetPath: assetPath,
+    );
+  }
+
+  List<Color> _processImageAndExtractColors(
       Uint8List imageData, int targetImageSize, int numberOfClusters) {
     final img.Image? decodedImage = img.decodeImage(imageData);
-    imageData.clear();
 
     if (decodedImage == null) return [];
 
@@ -44,8 +42,7 @@ class DominantColorExtractor {
     return colorPalette;
   }
 
-  static List<Color> _getClusteredColors(
-      img.Image image, int numberOfClusters) {
+  List<Color> _getClusteredColors(img.Image image, int numberOfClusters) {
     List<Instance> pixelInstances = [];
 
     for (int y = 0; y < image.height; y++) {
@@ -79,14 +76,14 @@ class DominantColorExtractor {
     }).toList();
   }
 
-  static List<Color> _filterOutExtremeColors(List<Color> colors) {
+  List<Color> _filterOutExtremeColors(List<Color> colors) {
     return colors.where((color) {
       double brightness = _calculateBrightness(color);
-      return brightness > 15 && brightness < 240;
+      return brightness > 30 && brightness < 220;
     }).toList();
   }
 
-  static double _calculateBrightness(Color color) {
+  double _calculateBrightness(Color color) {
     return (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue);
   }
 }
