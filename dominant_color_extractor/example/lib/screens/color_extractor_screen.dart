@@ -44,7 +44,8 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
       return;
     }
 
-    List<Color> colors = await _imageSelector.extractColors(imageBytes);
+    List<Color> colors =
+        await _imageSelector.extractColors(imageBytes: imageBytes);
 
     setState(() {
       isExtractingColors = false;

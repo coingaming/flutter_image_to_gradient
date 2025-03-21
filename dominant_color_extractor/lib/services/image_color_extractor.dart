@@ -17,10 +17,15 @@ class DominantColorExtractor implements ColorExtractorInterface {
     String? imageUrl,
     String? assetPath,
   }) async {
-    return _imageLoader.loadImageBytes(
-      imageUrl: imageUrl,
-      assetPath: assetPath,
-    );
+    try {
+      return await _imageLoader.loadImageBytes(
+        imageUrl: imageUrl,
+        assetPath: assetPath,
+      );
+    } catch (e) {
+      debugPrint("Error loading image: $e");
+      return null;
+    }
   }
 
   List<Color> _processImageAndExtractColors(
