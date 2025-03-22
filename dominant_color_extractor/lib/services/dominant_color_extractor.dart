@@ -3,29 +3,11 @@ import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:k_means_cluster/k_means_cluster.dart';
-import 'image_loader.dart';
 
-class DominantColorExtractor implements ColorExtractorInterface {
-  final ImageLoader _imageLoader = ImageLoader();
-
+class DominantColorExtractor implements DominantColorExtractorInterface {
   @override
   Future<List<Color>> extractColors({required Uint8List imageBytes}) async {
     return _processImageAndExtractColors(imageBytes, 200, 35);
-  }
-
-  Future<Uint8List?> loadImage({
-    String? imageUrl,
-    String? assetPath,
-  }) async {
-    try {
-      return await _imageLoader.loadImageBytes(
-        imageUrl: imageUrl,
-        assetPath: assetPath,
-      );
-    } catch (e) {
-      debugPrint("Error loading image: $e");
-      return null;
-    }
   }
 
   List<Color> _processImageAndExtractColors(

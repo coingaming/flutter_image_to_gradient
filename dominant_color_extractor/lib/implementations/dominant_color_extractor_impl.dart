@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 import 'package:flutter/material.dart';
 
-class ImageColorExtractorImpl implements ColorExtractorInterface {
+class DominantColorExtractorImpl implements DominantColorExtractorInterface {
   final _colorExtractor = DominantColorExtractor();
   final _cache = <int, List<Color>>{};
 

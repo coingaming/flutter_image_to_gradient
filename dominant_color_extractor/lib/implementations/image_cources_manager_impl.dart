@@ -1,27 +1,13 @@
 import 'dart:typed_data';
-
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dominant_color_extractor/interfaces/image_loader_interface.dart';
+import 'package:dominant_color_extractor/interfaces/image_source_manager_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageLoader implements ImageLoaderInterface {
+class ImageSourceManagerImpl implements ImageSourceManagerInterface {
   final ImagePicker _imagePicker = ImagePicker();
-
-  @override
-  Future<Uint8List?> loadImageBytes({
-    String? imageUrl,
-    String? localFilePath,
-    String? assetPath,
-    Uint8List? existingImageBytes,
-  }) async {
-    if (imageUrl != null) return await downloadImageFromUrl(imageUrl);
-    if (localFilePath != null) return await pickImageFromGallery();
-    if (assetPath != null) return await readImageFromAssets(assetPath);
-    return null;
-  }
 
   @override
   Future<Uint8List?> pickImageFromGallery() async {
@@ -37,6 +23,7 @@ class ImageLoader implements ImageLoaderInterface {
     }
   }
 
+  @override
   Future<Uint8List?> downloadImageFromUrl(String imageUrl) async {
     try {
       final Response<List<int>> response = await Dio().get<List<int>>(
@@ -51,6 +38,7 @@ class ImageLoader implements ImageLoaderInterface {
     }
   }
 
+  @override
   Future<Uint8List?> readImageFromAssets(String assetPath) async {
     try {
       final ByteData data = await rootBundle.load(assetPath);

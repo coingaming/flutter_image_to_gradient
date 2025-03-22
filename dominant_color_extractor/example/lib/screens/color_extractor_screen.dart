@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:dominant_color_extractor/implementations/dominant_color_extractor_impl.dart';
-import 'package:dominant_color_extractor/services/image_loader.dart';
+import 'package:dominant_color_extractor/dominant_color_extractor.dart';
+import 'package:dominant_color_extractor/services/image_selector.dart';
+
 import 'package:flutter/material.dart';
-import 'package:dominant_color_extractor/services/select_image_source.dart';
 
 class ColorExtractorScreen extends StatefulWidget {
   const ColorExtractorScreen({super.key});
@@ -15,24 +15,21 @@ class ColorExtractorScreen extends StatefulWidget {
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
-
-  final ImageSelector _imageSelector = ImageSelector(
-    ImageLoader(),
-    ImageColorExtractorImpl(),
-  );
+  final _imageSourceManager = ImageSelector();
+  final DominantColorExtractor _extractor = DominantColorExtractor();
 
   List<Color> extractedColors = [];
   bool isExtractingColors = false;
   Uint8List? loadedImageBytes;
 
-  Future<void> _handleImageSelection(String sourceType) async {
+  Future<void> _handleImageSelection(ImageSourceType sourceType) async {
     setState(() {
       isExtractingColors = true;
     });
 
-    Uint8List? imageBytes = await _imageSelector.selectImageSource(
-      sourceType: sourceType,
+    Uint8List? imageBytes = await _imageSourceManager.selectImageSource(
       imageUrl: _imageUrlController.text.trim(),
+      sourceType: sourceType,
     );
 
     if (imageBytes == null) {
@@ -44,8 +41,7 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
       return;
     }
 
-    List<Color> colors =
-        await _imageSelector.extractColors(imageBytes: imageBytes);
+    List<Color> colors = await _extractor.extractColors(imageBytes: imageBytes);
 
     setState(() {
       isExtractingColors = false;
@@ -94,19 +90,21 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.image, color: Colors.white),
-                    onPressed: () => _handleImageSelection("Gallery"),
+                    onPressed: () =>
+                        _handleImageSelection(ImageSourceType.gallery),
                     tooltip: "Pick from Gallery",
                   ),
                   IconButton(
                     icon: const Icon(Icons.photo_library, color: Colors.white),
-                    onPressed: () => _handleImageSelection("Assets"),
+                    onPressed: () =>
+                        _handleImageSelection(ImageSourceType.assets),
                     tooltip: "Load from Assets",
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => _handleImageSelection("URL"),
+                onPressed: () => _handleImageSelection(ImageSourceType.url),
                 child: const Text('Extract Colors',
                     style: TextStyle(fontSize: 16, color: Colors.black)),
               ),
