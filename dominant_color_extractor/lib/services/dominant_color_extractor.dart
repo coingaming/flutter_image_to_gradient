@@ -3,11 +3,19 @@ import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:k_means_cluster/k_means_cluster.dart';
+import '../config/dominant_color_extractor.dart';
 
 class DominantColorExtractor implements DominantColorExtractorInterface {
   @override
-  Future<List<Color>> extractColors({required Uint8List imageBytes}) async {
-    return _processImageAndExtractColors(imageBytes, 200, 35);
+  Future<List<Color>> extractColors(
+      {required Uint8List imageBytes,
+      DominantColorExtractorConfig config =
+          const DominantColorExtractorConfig()}) async {
+    return _processImageAndExtractColors(
+      imageBytes,
+      config.targetImageSize,
+      config.numberOfClusters,
+    );
   }
 
   List<Color> _processImageAndExtractColors(
@@ -43,7 +51,32 @@ class DominantColorExtractor implements DominantColorExtractorInterface {
       }
     }
 
-    if (pixelInstances.isEmpty) return [Colors.grey];
+    Color calculateAverageColor(img.Image image) {
+      int totalRed = 0, totalGreen = 0, totalBlue = 0;
+      int count = 0;
+
+      for (int y = 0; y < image.height; y++) {
+        for (int x = 0; x < image.width; x++) {
+          int pixelColor = image.getPixel(x, y);
+          pixelInstances.add(Instance(location: [
+            img.getRed(pixelColor),
+            img.getGreen(pixelColor),
+            img.getBlue(pixelColor)
+          ], id: '$x-$y'));
+        }
+      }
+
+      if (count == 0) return Colors.grey;
+
+      return Color.fromRGBO(
+        (totalRed ~/ count),
+        (totalGreen ~/ count),
+        (totalBlue ~/ count),
+        1,
+      );
+    }
+
+    if (pixelInstances.isEmpty) return [calculateAverageColor(image)];
 
     List<Cluster> clusters =
         initialClusters(numberOfClusters, pixelInstances, seed: 0);
@@ -66,7 +99,7 @@ class DominantColorExtractor implements DominantColorExtractorInterface {
   List<Color> _filterOutExtremeColors(List<Color> colors) {
     return colors.where((color) {
       double brightness = _calculateBrightness(color);
-      return brightness > 30 && brightness < 220;
+      return brightness > 30 && brightness < 180;
     }).toList();
   }
 
