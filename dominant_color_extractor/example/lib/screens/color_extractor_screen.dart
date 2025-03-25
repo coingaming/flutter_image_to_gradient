@@ -1,8 +1,6 @@
 import 'dart:typed_data';
-
 import 'package:dominant_color_extractor/dominant_color_extractor.dart';
-import 'package:dominant_color_extractor/services/image_selector.dart';
-
+import 'package:dominant_color_extractor/implementations/image_selector_impl.dart';
 import 'package:flutter/material.dart';
 
 class ColorExtractorScreen extends StatefulWidget {
@@ -15,8 +13,8 @@ class ColorExtractorScreen extends StatefulWidget {
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
-  final _imageSourceManager = ImageSelector();
-  final DominantColorExtractor _extractor = DominantColorExtractor();
+  final _imageSourceManager = ImageSelectorImpl();
+  final ImageColorProcessorImpl _extractor = ImageColorProcessorImpl();
 
   List<Color> extractedColors = [];
   bool isExtractingColors = false;

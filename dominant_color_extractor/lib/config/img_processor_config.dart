@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class DominantColorExtractorConfig {
+class ImgProcessorConfig {
   final int targetImageSize;
   final int numberOfClusters;
   final int sampleRate;
   final List<Color> ignoredColors;
 
-  const DominantColorExtractorConfig({
+  const ImgProcessorConfig({
     this.targetImageSize = 200,
     this.numberOfClusters = 35,
     this.sampleRate = 1,
