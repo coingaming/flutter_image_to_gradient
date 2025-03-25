@@ -1,15 +1,14 @@
 import 'dart:typed_data';
 import 'package:dominant_color_extractor/dominant_color_extractor.dart';
 
-import 'image_sources_manager_impl.dart';
+import '../implementations/image_cources_manager_impl.dart';
 
 enum ImageSourceType { gallery, assets, url }
 
-class ImageSelectorImpl implements ImageSelectorInterface {
+class ImageSelector {
   final ImageSourceManagerInterface _imageSourceManager =
       ImageSourceManagerImpl();
 
-  @override
   Future<Uint8List?> selectImageSource(
       {required ImageSourceType sourceType, String? imageUrl}) async {
     return switch (sourceType) {
