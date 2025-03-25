@@ -1,4 +1,4 @@
-name: image_gra
+name: example
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,21 +30,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dominant_color_extractor:
+    path: ../
+  
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_bloc: ^9.0.0
-  equatable: ^2.0.7
-  image: ^3.2.0
-  k_means_cluster: ^0.3.0
  
-  
-
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  image: ^3.2.0
+
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
