@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:image_gra/models/dominant_color_model.dart';
 
@@ -16,12 +15,17 @@ class DominantColorState extends Equatable {
       this.imagePath,
       this.errorMessage});
 
-  DominantColorState copyWith({DominantColorStatus? status, Color? color}) {
+  DominantColorState copyWith({
+    DominantColorStatus? status,
+    DominantColorModel? colorModel,
+    String? imagePath,
+    String? errorMessage,
+  }) {
     return DominantColorState(
       status: status ?? this.status,
-      imagePath: imagePath,
-      colorModel: colorModel ?? colorModel,
-      errorMessage: errorMessage ?? errorMessage,
+      colorModel: colorModel ?? this.colorModel,
+      imagePath: imagePath ?? this.imagePath,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

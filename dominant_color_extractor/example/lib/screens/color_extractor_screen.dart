@@ -1,22 +1,19 @@
 import 'dart:typed_data';
-
 import 'package:dominant_color_extractor/dominant_color_extractor.dart';
-import 'package:dominant_color_extractor/services/image_selector.dart';
-
+import 'package:dominant_color_extractor/implementations/image_selector_impl.dart';
 import 'package:flutter/material.dart';
 
 class ColorExtractorScreen extends StatefulWidget {
   const ColorExtractorScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ColorExtractorScreenState createState() => _ColorExtractorScreenState();
 }
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
-  final _imageSourceManager = ImageSelector();
-  final DominantColorExtractor _extractor = DominantColorExtractor();
+  final ImageSelectorInterface _imageSourceManager = ImageSelectorImpl();
+  final ImageColorProcessorInterface _extractor = ImageColorProcessorImpl();
 
   List<Color> extractedColors = [];
   bool isExtractingColors = false;
