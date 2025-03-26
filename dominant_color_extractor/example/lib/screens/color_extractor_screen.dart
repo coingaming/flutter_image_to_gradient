@@ -7,14 +7,13 @@ class ColorExtractorScreen extends StatefulWidget {
   const ColorExtractorScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ColorExtractorScreenState createState() => _ColorExtractorScreenState();
 }
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
-  final _imageSourceManager = ImageSelectorImpl();
-  final ImageColorProcessorImpl _extractor = ImageColorProcessorImpl();
+  final ImageSelectorInterface _imageSourceManager = ImageSelectorImpl();
+  final ImageColorProcessorInterface _extractor = ImageColorProcessorImpl();
 
   List<Color> extractedColors = [];
   bool isExtractingColors = false;
