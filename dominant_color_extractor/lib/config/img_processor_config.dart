@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ImgProcessorConfig {
   static const int _defaultImageSize = 200;
-  static const int _numberOfClusters = 35;
-  static const int _sampleRate = 1;
+  static const int _defaultNumberOfClusters = 35;
+  static const int _defaultSampleRate = 1;
 
   final int targetImageSize;
   final int numberOfClusters;
@@ -12,8 +12,8 @@ class ImgProcessorConfig {
 
   const ImgProcessorConfig({
     this.targetImageSize = _defaultImageSize,
-    this.numberOfClusters = _numberOfClusters,
-    this.sampleRate = _sampleRate,
+    this.numberOfClusters = _defaultNumberOfClusters,
+    this.sampleRate = _defaultSampleRate,
     this.ignoredColors = const [Colors.white, Colors.black],
   });
 }

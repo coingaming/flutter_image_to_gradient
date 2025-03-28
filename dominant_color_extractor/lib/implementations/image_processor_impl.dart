@@ -27,7 +27,7 @@ class ImageProcessorImpl implements ImageProcessorInterface {
   }
 
   @override
-  Future<ImageProcessorResult?> processorFromGalery() async {
+  Future<ImageProcessorResult?> processorFromGallery() async {
     final imageBytes = await _imageSourse.pickImageFromGallery();
 
     final colors = await _colorProcessor.extractColors(imageBytes: imageBytes);
