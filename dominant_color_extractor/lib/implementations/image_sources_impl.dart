@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dominant_color_extractor/interfaces/image_source_manager_interface.dart';
+import 'package:dominant_color_extractor/interfaces/image_source_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageSourceManagerImpl implements ImageSourceManagerInterface {
+class ImageSourceImpl implements ImageSourceInterface {
   final ImagePicker _imagePicker = ImagePicker();
 
   @override

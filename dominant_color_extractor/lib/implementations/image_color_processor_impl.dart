@@ -14,7 +14,10 @@ class ImageColorProcessorImpl implements ImageColorProcessorInterface {
   });
 
   @override
-  Future<List<Color>> extractColors({required Uint8List imageBytes}) async {
+  Future<List<Color>> extractColors({required Uint8List? imageBytes}) async {
+    if (imageBytes == null) {
+      return [];
+    }
     final key = imageBytes.hashCode;
     if (_cache.containsKey(key)) return _cache[key]!;
 
