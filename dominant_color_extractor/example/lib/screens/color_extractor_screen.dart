@@ -1,12 +1,10 @@
 import 'dart:typed_data';
-
-import 'package:dominant_color_extractor/implementations/image_processor_impl.dart';
-
-import 'package:dominant_color_extractor/interfaces/image_processor_interface.dart';
-
+import 'package:example/bloc/gradient_bloc.dart';
+import 'package:example/bloc/gradient_event.dart';
+import 'package:example/bloc/gradient_state.dart';
 import 'package:flutter/material.dart';
-
-enum ImageSourceType { url, gallery, assets }
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dominant_color_extractor/implementations/image_processor_impl.dart';
 
 class ColorExtractorScreen extends StatefulWidget {
   const ColorExtractorScreen({super.key});
@@ -17,34 +15,6 @@ class ColorExtractorScreen extends StatefulWidget {
 
 class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
   final TextEditingController _imageUrlController = TextEditingController();
-  final ImageProcessorInterface _processor = ImageProcessorImpl();
-
-  bool isLoading = false;
-  late Uint8List imageBytes;
-  List<Color> extractedColors = [];
-
-  Future<void> _extractColors(ImageSourceType sourceType) async {
-    setState(() => isLoading = true);
-
-    final result = switch (sourceType) {
-      ImageSourceType.url =>
-        await _processor.processorFromUrl(_imageUrlController.text.trim()),
-      ImageSourceType.gallery => await _processor.processorFromGallery(),
-      ImageSourceType.assets =>
-        await _processor.processorFromAsset('assets/images/image_gradient.jpg'),
-    };
-
-    setState(() {
-      isLoading = false;
-      if (result == null) {
-        extractedColors = [];
-      } else {
-        extractedColors = result.colors;
-        imageBytes = result.imageBytes;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,33 +27,92 @@ class _ColorExtractorScreenState extends State<ColorExtractorScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              UrlInputField(controller: _imageUrlController),
-              const SizedBox(height: 20),
-              ImageSourceButtons(onSelect: _extractColors),
-              const SizedBox(height: 20),
-              ExtractButton(
-                onPressed: () => _extractColors(ImageSourceType.url),
+      body: BlocProvider(
+        create: (_) => GradientBloc(ImageProcessorImpl()),
+        child: BlocBuilder<GradientBloc, GradientState>(
+          builder: (context, state) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    UrlInputField(controller: _imageUrlController),
+                    const SizedBox(height: 20),
+                    ImageSourceButtons(
+                      onSelectGallery: () {
+                        context.read<GradientBloc>().add(ExtractFromGallery());
+                      },
+                      onSelectAsset: () {
+                        context.read<GradientBloc>().add(ExtractFromAsset(
+                            'assets/images/image_gradient.jpg'));
+                      },
+                      onSelectUrl: () {
+                        context
+                            .read<GradientBloc>()
+                            .add(ExtractFromUrl(_imageUrlController.text));
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ExtractButton(
+                      onPressed: () {
+                        context
+                            .read<GradientBloc>()
+                            .add(ExtractFromUrl(_imageUrlController.text));
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    if (state.status == GradientStatus.loading)
+                      const CircularProgressIndicator(color: Colors.blue)
+                    else ...[
+                      if (state.extractedColors.isNotEmpty)
+                        ImagePreview(imageBytes: state.imageBytes),
+                      const SizedBox(height: 20),
+                      if (state.extractedColors.isNotEmpty)
+                        GradientPreview(colors: state.extractedColors),
+                    ],
+                    if (state.status == GradientStatus.error)
+                      Text('Error: ${state.errorMessage}',
+                          style: TextStyle(color: Colors.red)),
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-              if (isLoading)
-                const CircularProgressIndicator(color: Colors.blue)
-              else ...[
-                if (extractedColors.isNotEmpty)
-                  ImagePreview(imageBytes: imageBytes),
-                const SizedBox(height: 20),
-                if (extractedColors.length >= 2)
-                  GradientPreview(colors: extractedColors),
-              ],
-            ],
-          ),
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+class ImageSourceButtons extends StatelessWidget {
+  final void Function() onSelectGallery;
+  final void Function() onSelectAsset;
+  final void Function() onSelectUrl;
+
+  const ImageSourceButtons({
+    super.key,
+    required this.onSelectGallery,
+    required this.onSelectAsset,
+    required this.onSelectUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.image_search, color: Colors.white),
+          onPressed: onSelectGallery,
+          tooltip: "Pick from Gallery",
+        ),
+        IconButton(
+          icon: const Icon(Icons.photo_library, color: Colors.white),
+          onPressed: onSelectAsset,
+          tooltip: "Load from Assets",
+        ),
+      ],
     );
   }
 }
@@ -110,31 +139,6 @@ class UrlInputField extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ImageSourceButtons extends StatelessWidget {
-  final void Function(ImageSourceType) onSelect;
-
-  const ImageSourceButtons({super.key, required this.onSelect});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.image, color: Colors.white),
-          onPressed: () => onSelect(ImageSourceType.gallery),
-          tooltip: "Pick from Gallery",
-        ),
-        IconButton(
-          icon: const Icon(Icons.photo_library, color: Colors.white),
-          onPressed: () => onSelect(ImageSourceType.assets),
-          tooltip: "Load from Assets",
-        ),
-      ],
     );
   }
 }
